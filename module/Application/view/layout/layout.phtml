@@ -1,0 +1,178 @@
+<?php
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ */
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Sistema de Control de Calidad DMC</title>
+
+    <?= $this->headMeta()
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+    ?>
+
+    <!-- Bootstrap 5 -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+       
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --dmc-blue: #2D4356;
+            --dmc-accent: #84A7A1;
+            --dmc-gray-bg: #f5f7fa;
+            --dmc-gray-border: #dee2e6;
+            --dmc-text: #333333;
+        }
+        
+        body {
+            background-color: var(--dmc-gray-bg);
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            color: var(--dmc-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Cabecera institucional */
+        .dmc-header {
+            background-color: var(--dmc-blue);
+            color: white;
+            padding: 0.5rem 2rem;
+            border-bottom: 3px solid var(--dmc-accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .header-logos {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-logos img {
+            height: 80px;
+            width: auto;
+        }
+        
+        /* Logo DMC a la izquierda */
+        .logo-dmc {
+            margin-right: 15px;
+        }
+        
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+            color: white;
+        }
+        
+        /* Logo DGAC a la derecha */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo-dgac {
+            height: 70px;
+            width: auto;
+        }
+        
+        .header-date {
+            background-color: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        /* Contenedor principal */
+        .main-container {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* Pie de página */
+        .dmc-footer {
+            background-color: white;
+            border-top: 1px solid var(--dmc-gray-border);
+            padding: 0.8rem 2rem;
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links a {
+            color: var(--dmc-blue);
+            text-decoration: none;
+            margin-left: 1.2rem;
+            font-size: 0.8rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--dmc-accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabecera institucional con logos DMC izquierda, DGAC derecha -->
+    <div class="dmc-header">
+        <div class="header-left">
+            <div class="header-logos">
+                <img src="/img/logo-dmc.png" alt="Logo DMC" class="logo-dmc">
+            </div>
+            <div class="header-title">
+                <h1>Visor de Calidad de Datos de Estaciones Meteorológicas</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-date">
+                <i class="far fa-calendar-alt me-2"></i>
+                <?= date('d/m/Y') ?>
+            </div>
+            <img src="/img/logo-dgac.png" alt="Logo DGAC" class="logo-dgac">
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-container">
+        <?= $this->content ?>
+    </div>
+
+    <!-- Pie de página -->
+    <div class="dmc-footer">
+        <div>
+            <i class="fas fa-cloud-sun me-2" style="color: var(--dmc-accent);"></i>
+            Dirección Meteorológica de Chile - Intranet
+        </div>
+        <div class="footer-links">
+            <span>© <?= date('Y') ?> - v1.0</span>
+            <a href="#"><i class="fas fa-question-circle me-1"></i>Ayuda</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/bootstrap.min.js"></script>
+    
+    <?= $this->inlineScript() ?>
+</body>
+</html>

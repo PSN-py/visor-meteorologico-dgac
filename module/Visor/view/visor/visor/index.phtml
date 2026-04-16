@@ -1,0 +1,233 @@
+<!-- Leaflet -->
+<link rel="stylesheet" href="/css/leaflet.css" />
+<link rel="stylesheet" href="/css/MarkerCluster.css" />
+<link rel="stylesheet" href="/css/MarkerCluster.Default.css" />
+
+
+<!-- FILA PRINCIPAL: Dos columnas -->
+<div class="row g-3" style="min-height: 500px;">
+    <!-- Columna izquierda: FILTROS + PANEL ESTACIÓN (32%) -->
+    <div class="col-lg-4 d-flex flex-column">
+
+    <!-- Filtros en dos columnas -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header py-2 d-flex align-items-center"
+                style="background-color: #2D4356; color: white; border-bottom: 2px solid #84A7A1;">
+
+                <i class="fas fa-search me-1"></i>
+                <small>Filtros de búsqueda</small>
+
+                <!-- Botón para Abrir Reporte General en nueva pestaña -->
+                <a id="generarReporteGeneral"
+                    class="btn btn-sm ms-auto"
+                    style="background-color: transparent; color: white; border: 1px solid white;"
+                    target="_blank">
+                        <i class="fas fa-file-alt me-1"></i> Reporte General
+                </a>
+            </div>
+            <div class="card-body p-3">
+                <div class="row g-2">
+                    <!-- Columna 1 Filtros -->
+                    <div class="col-6">
+                        <label class="form-label fw-bold small mb-1" for="filtro-region" style="color: #2D4356;">Región</label>
+                        <select id="filtro-region" class="form-select form-select-sm mb-2">
+                            <option value="todos">Todos</option>
+                        </select>
+
+                        <label class="form-label fw-bold small mb-1" for="filtro-variable" style="color: #2D4356;">Variable</label>
+                        <select id="filtro-variable" class="form-select form-select-sm mb-2">
+                            <option value="General">General</option>
+                            <option value="Temperatura">Temperatura</option>
+                            <option value="Humedad">Humedad</option>
+                            <option value="Presión">Presión</option>
+                            <option value="Viento">Viento</option>
+                            <option value="Precipitación">Precipitación</option>
+                        </select>
+
+                        <label class="form-label fw-bold small mb-1" for="buscador-codigo" style="color: #2D4356;">Código estación</label>
+                        <input
+                            type="text"
+                            id="buscador-codigo"
+                            class="form-control"
+                            placeholder="Ej: 310040">
+                        <div id="sugerencias-estaciones" class="list-group"></div>
+                    </div>
+
+                    <!-- Columna 2 Filtros -->
+                    <div class="col-6">
+                        <label class="form-label fw-bold small mb-1" for="filtro-institucion" style="color: #2D4356;">Institución</label>
+                        <select id="filtro-institucion" class="form-select form-select-sm mb-2">
+                            <option value="todas">Todas</option>
+                            <option value="ema">DMC</option>
+                            <option value="no_ema">No DMC</option>
+                        </select>
+                        <label class="form-label fw-bold small mb-1" for="filtro-estado" style="color: #2D4356;">Estado</label>
+                        <select id="filtro-estado" class="form-select form-select-sm mb-2">
+                            <option value="todos" selected>Todos</option>
+                            <option value="error">Error</option>
+                            <option value="alerta">Advertencia</option>
+                            <option value="normal">Normal</option>
+                            <option value="offline">Offline</option>
+                        </select>
+                        <label class="form-label fw-bold small mb-1" for="filtro-ejecucion" style="color: #2D4356;">Ejecución</label>
+                        <select id="filtro-ejecucion" class="form-select form-select-sm mb-2">
+                            <option value="">Cargando ejecuciones...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Estadísticas - ESTACIONES a la izquierda, NORMAL/ADVERTENCIA/CRÍTICA a la derecha -->
+                <hr class="my-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Estaciones -->
+                    <div>
+                        <div class="text-muted">
+                            <span class="fw-bold" style="color: #2D4356;" id="total-estaciones">0</span> estaciones
+                        </div>
+                        <div class="small mt-1">
+                            <span class="ms-1" style="font-size: 0.9rem; color: #2D4356;" id="online-estaciones">●online 0</span>
+                            <span style="font-size: 0.9rem; color: #820000;" id="offline-estaciones">●offline 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Normal, Advertencia, Crítica -->
+                    <div class="fw-bold">
+                        <span class="me-2" style="color: #28a745;" id="normal-count">Normal: 0</span>
+                        <span class="me-2" style="color: #ffc107;" id="advertencia-count">Advertencia: 0</span>
+                        <span style="color: #dc3545;" id="critica-count">Error: 0</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Panel de Estación Seleccionada -->
+        <div class="card shadow-sm border-0 flex-grow-1 d-flex flex-column">
+            <div class="card-header py-2" style="background-color: #2D4356; color: white; border-bottom: 2px solid #84A7A1;">
+                <i class="fas fa-info-circle me-1"></i> <small>Panel de la estación seleccionada</small>
+                <span class="badge bg-danger ms-2">NORMAL</span>
+            </div>
+            <div class="card-body p-3 d-flex flex-column">
+                <!-- Selector de estación -->
+                    <div class="mb-3 p-2 bg-light rounded" style="border-left: 4px solid #84A7A1;">
+                    <div class="small text-muted" id="id-estacion-actual">330020</div>
+                    <div class="fw-bold" style="color: #2D4356; font-size: 1.1rem;" id="nombre-estacion-actual">Quinta Normal, Santiago</div>
+                    <div class="small text-muted" id="region-estacion-actual">Metropolitana de Santiago</div>
+                    <div class="small text-muted" id="institucion-estacion-actual">Institución: DMC</div>
+                </div>
+
+                <!-- Tabla de alertas compacta -->
+                <div style="overflow-y: auto; max-height: 150px;" class="mb-2">
+                    <table class="table table-sm table-hover small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Estado</th>
+                                <th>Variable</th>
+                                <th>Mensaje estado</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-mediciones"></tbody>
+
+                    </table>
+                </div>
+
+                <!-- Reporte de error o advertencia (SOLO LECTURA) -->
+                <div class="mb-2">
+                    <p class="form-label fw-bold mb-1" style="color: #2D4356;">
+                        <i class="fas fa-exclamation-triangle me-1" style="color: #84A7A1;"></i>
+                        Reporte de error o advertencia:
+                    </p>
+                    <div class="p-2 bg-light rounded" style="border-left: 3px solid #dc3545; min-height: 50px;">
+                        <div id="mensaje-alerta" class="mb-2"></div>
+                        <div id="lista-alertas" style="display:none; max-height:150px; overflow-y:auto;"></div>
+                    </div>
+                </div>
+
+                <!-- Botón ver historial de advertencias/errores -->
+                <a id="btn-ver-historial"
+                    href="#"
+                    target="_blank"
+                    class="btn btn-sm w-100 mb-2"
+                    style="background-color: #84A7A1; color: white;">
+                    <i class="fas fa-file-alt me-1"></i> Ver Historial de Alertas
+                </a>
+
+                <!-- Botón ver reportes html (enlace interno) -->
+                <a id="btn-ver-reporte"
+                    href="#"
+                    target="_blank"
+                    class="btn btn-sm w-100 mb-2"
+                    style="background-color: #84A7A1; color: white;">
+                    <i class="fas fa-file-alt me-1"></i> Ver Reporte
+                </a>
+
+                <!-- Botón ver gráficos (enlace externo) -->
+                <a id="btn-ver-graficos"
+                href="javascript:void(0)"
+                target="_blank"
+                class="btn btn-sm w-100 mb-2"
+                style="background-color: #84A7A1; color: white;">
+                    <i class="fas fa-chart-line me-1"></i> Ver Gráficos de Variables
+                </a>
+
+                <!-- Coordenadas compactas -->
+                <div class="row g-1 small">
+                    <div class="col-4">
+                        <div class="p-1 bg-light rounded text-center">
+                            <span class="text-muted">lat:</span><span id="estacion-lat"> -33.44°</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-1 bg-light rounded text-center">
+                            <span class="text-muted">Lon:</span><span id="estacion-lon"> -70.68°</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-1 bg-light rounded text-center">
+                            <span class="text-muted">Altura:</span> <span id="estacion-altura">520m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna derecha: MAPA (68%) -->
+    <div class="col-lg-8">
+        <div id="panel-mapa" class="card shadow-sm border-0 h-100 d-flex flex-column">
+            <div class="card-header py-2 d-flex align-items-center" style="background-color: #2D4356; color: white; border-bottom: 2px solid #84A7A1;">
+                <i class="fas fa-map me-1"></i> <small>Mapa de Estaciones</small>
+                <span class="ms-auto small">
+                    <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>Normal
+                    <i class="fas fa-circle text-warning ms-2 me-1" style="font-size: 8px;"></i>Advertencia
+                    <i class="fas fa-circle text-danger ms-2 me-1" style="font-size: 8px;"></i>Error
+                    <i class="fas fa-circle text-dark ms-2 me-1" style="font-size: 8px;"></i>Offline
+                    <i class="fas fa-circle text-secondary ms-2 me-1" style="font-size: 8px;"></i>Sin Control
+                </span>
+                <div id="controles-mapa" class="ms-auto">
+                    <button id="btn-recorrer" onclick="controlRecorrido()"
+                        style="font-size: 13px;">
+                    ▶ Recorrer
+                    </button>
+                    <button id="btn-max-mapa" onclick="toggleMapa()"
+                        style="font-size: 13px;">
+                    ⛶ Maximizar
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-1 flex-grow-1">
+                <div id="contenedor-mapa" style="height:100%;">
+                <div id="mapa" style="height: 100%; min-height: 450px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/leaflet.js"></script>
+<script src="/js/leaflet.markercluster.js"></script>
+
+<script src="/js/visor-mapaGeo.js?v=2.5"></script>
+<script src="/js/visor-estaciones.js?v=2.5"></script>
+<script src="/js/main.js?v=2.5"></script>
